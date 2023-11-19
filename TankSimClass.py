@@ -43,20 +43,26 @@ class Tank:
 
     def getTemperature(self) -> float:
         return self.waterTemp
-    
+
     def getLevel(self) -> float:
         return self.waterLevel
-    
+
     def pump_handler(self, time):
-        delta = self.flowRate*time
-        if self.pumpInState:
+        if self.pumpInState and not self.pumpOutState:
             self.waterLevel += time * self.flowRate
-        if self.pumpOutState:
+            delta = self.flowRate*time
+        elif self.pumpOutState and not self.pumpInState:
             self.waterLevel -= time * self.flowRate
+            delta = -self.flowRate*time
+        else:
+            delta = 0
         return delta
 
     def termomix_handler(self, deltaLiters):
         waterLevelBefore = self.waterLevel - deltaLiters
+        # We mix the temperature of water only if it was pumped in
+        if deltaLiters > 0:
+            self.waterTemp = (waterLevelBefore * self.waterTemp + deltaLiters * self.ambientTemp)/(self.waterLevel)
 
     def heater_handler(self, time):
         c = 4200
@@ -68,9 +74,8 @@ class Tank:
 
     def run(self, time: float = 1) -> None:
         delta = self.pump_handler(time)
-        # self.termomix_handler()
+        self.termomix_handler(delta)
         self.heater_handler(time)
 
     def __str__(self) -> str:
         return f"Tank capacity: {self.capacity}\nTank level: {self.waterLevel}\nTank temp: {self.waterTemp}\n"
-    
