@@ -1,5 +1,6 @@
 from flask import Flask
-from tank import Tank
+from TankSimClass import Tank
+import testClass as tC
 import threading
 from time import sleep
 

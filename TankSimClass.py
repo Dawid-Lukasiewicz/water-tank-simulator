@@ -17,9 +17,12 @@ class Tank:
                  ,waterLevel = 0.0
                  ,ambientTemp = 20.0
                  ,waterTemp = 20.0
+                 ,flowRate = 20.0
+                 ,heaterPower = 20.0
                  ,heaterState = False
                  ,pumpInState = False
-                 ,pumpOutState = False):
+                 ,pumpOutState = False
+                 ):
         self.capacity       = capacity
         self.waterLevel     = waterLevel
         self.ambientTemp    = ambientTemp
@@ -27,6 +30,8 @@ class Tank:
         self.heaterState    = heaterState
         self.pumpInState    = pumpInState
         self.pumpOutState   = pumpOutState
+        self.flowRate       = flowRate
+        self.heaterPower    = heaterPower
 
     def setHeater(self, state: bool) -> None:
         self.heaterState = state
@@ -42,8 +47,29 @@ class Tank:
     def getLevel(self) -> float:
         return self.waterLevel
     
-    def run(self) -> None:
-        self.waterLevel += 1
+    def pump_handler(self, time):
+        delta = self.flowRate*time
+        if self.pumpInState:
+            self.waterLevel += time * self.flowRate
+        if self.pumpOutState:
+            self.waterLevel -= time * self.flowRate
+        return delta
+
+    def termomix_handler(self, deltaLiters):
+        waterLevelBefore = self.waterLevel - deltaLiters
+
+    def heater_handler(self, time):
+        c = 4200
+        if self.waterLevel <= 0:
+            self.waterTemp = self.ambientTemp
+            return
+        if self.heaterState:
+            self.waterTemp = self.heaterPower*time/(c*self.waterLevel) + self.waterTemp
+
+    def run(self, time: float = 1) -> None:
+        delta = self.pump_handler(time)
+        # self.termomix_handler()
+        self.heater_handler(time)
 
     def __str__(self) -> str:
         return f"Tank capacity: {self.capacity}\nTank level: {self.waterLevel}\nTank temp: {self.waterTemp}\n"
