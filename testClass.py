@@ -1,6 +1,54 @@
 from TankSimClass import Tank
 from TankSimClass import PumpType
 
+def test1_pump():
+    # test działania pompowania
+    tank = Tank(flowRate=1)
+    tank.run(1)
+    # samo run nie zmienia poziomu wody jeżeli pompy są wyłączone
+    assert tank.getLevel() == 0
+    tank.setPump(PumpType.IN_PUMP, True)
+    # pompa uruchomiona
+    tank.run(1)
+    assert tank.getLevel() == 1
+    # test mniejszego kwantu czasu
+    tank.run(0.5)
+    assert tank.getLevel() == 1.5
+    # zmiana kierunku pompowania
+    tank.setPump(PumpType.IN_PUMP, False)
+    tank.setPump(PumpType.OUT_PUMP, True)
+    tank.run(2)
+    assert tank.getLevel() == 0
+    # wypompowanie poniżej zera powinno być niemożliwe
+    tank.run(1)
+    assert tank.getLevel() == 0
+
+def test2_pump():
+    # test pompowania do maksymalnego poziomu wody
+    tank = Tank(flowRate=2.5, capacity=10)
+    tank.run(10)
+    assert tank.getLevel() == 0
+    tank.setPump(PumpType.IN_PUMP, True)
+    tank.run(10)
+    #zbiornik powinien osiągnąć maksymalny poziom
+    assert tank.getLevel() == 10
+
+def test3_pump():
+    # dwie pompy naraz
+    tank = Tank()
+    # działa tylko pompa IN
+    tank.setPump(PumpType.IN_PUMP, True)
+    tank.run(1)
+    assert tank.getLevel() == 1
+    # teraz obie pompy działaja naraz
+    tank.setPump(PumpType.OUT_PUMP, True)
+    tank.run(1)
+    assert tank.getLevel() == 1
+    # działa tylko pompa OUT
+    tank.setPump(PumpType.IN_PUMP, False)
+    tank.run(1)
+    assert tank.getLevel() == 0
+
 def test4_heater():
     tank = Tank(capacity=10, flowRate=1.0, heaterPower=1000, ambientTemp=20)
     tank.setPump(PumpType.IN_PUMP, True)
@@ -52,6 +100,9 @@ def test6_termomix():
     # powinnismy miec 10 litórw o temperaturze 25 stopni
     assert tank.getTemperature() == 25
 
+test1_pump()
+test2_pump()
+test3_pump()
 test4_heater()
 test5_heater()
 test6_termomix()

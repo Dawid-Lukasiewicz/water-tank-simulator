@@ -17,7 +17,7 @@ class Tank:
                  ,waterLevel = 0.0
                  ,ambientTemp = 20.0
                  ,waterTemp = 20.0
-                 ,flowRate = 20.0
+                 ,flowRate = 1.0
                  ,heaterPower = 20.0
                  ,heaterState = False
                  ,pumpInState = False
@@ -56,6 +56,14 @@ class Tank:
             delta = -self.flowRate*time
         else:
             delta = 0
+        # Check if water level is exceeded
+        if self.waterLevel < 0:
+            self.waterLevel = 0
+            delta = 0
+        elif self.waterLevel > self.capacity:
+            self.waterLevel = self.capacity
+            delta = 0
+
         return delta
 
     def termomix_handler(self, deltaLiters):
