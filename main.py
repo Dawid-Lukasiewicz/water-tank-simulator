@@ -3,22 +3,13 @@ from flask import Flask, jsonify, make_response, request
 from flasgger import Swagger #swagger
 from TankSimClass import PumpType, Tank
 import threading
-import time
+from time import sleep
 
 app = Flask(__name__)
 app.config['SWAGGER'] = {'title': 'Tank API', 'uiversion': 3}
 swagger = Swagger(app) #swagger
 
 tank = Tank()
-
-def tank_engine(wait: float):
-    while True:
-        tank.run(wait)
-        time.sleep(wait)
-
-t_ref = threading.Thread(target=tank_engine, args=[2])
-t_ref.daemon = True
-t_ref.start()
 
 @app.route("/")
 def get_home():
@@ -58,7 +49,7 @@ def get_tank_state():
     )
     return response
 
-# w cmd: curl -X POST localhost:5000/heater -H "Content-Type: application/json" -d "{\"state\": true}"
+# curl -X POST localhost:5000/heater -H "Content-Type: application/json" -d "{\"state\": true}"
 @app.route("/heater", methods = ['POST'])
 def set_heater():
     """
@@ -67,10 +58,13 @@ def set_heater():
     data_json = request.get_json()
     state = data_json["state"]
     print(state)
-    tank.set_heater(state)
+    tank.setHeater(state)
     return f"Heate State: {state}", 200
 
-#w cmd: curl -X POST localhost:5000/pump -H "Content-Type: application/json" -d "{\"type\": \"IN_PUMP\",\"state\": true}"
+# curl -X POST localhost:5000/pump -H "Content-Type: application/json" -d "{\"type\": \"IN_PUMP\",\"state\": true}"
+# curl -X POST localhost:5000/pump -H "Content-Type: application/json" -d "{\"type\": \"IN_PUMP\",\"state\": false}"
+# curl -X POST localhost:5000/pump -H "Content-Type: application/json" -d "{\"type\": \"OUT_PUMP\",\"state\": true}"
+# curl -X POST localhost:5000/pump -H "Content-Type: application/json" -d "{\"type\": \"OUT_PUMP\",\"state\": false}"
 @app.route("/pump", methods=['POST'])
 def set_pump():
     """
@@ -86,6 +80,14 @@ def set_pump():
 
     tank.setPump(type, state)
     return f"Pump: {type}, State: {state}"
+
+def thread_run():
+    while True:
+        tank.run()
+        sleep(1)
+
+thread = threading.Thread(target=thread_run)
+thread.start()
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')

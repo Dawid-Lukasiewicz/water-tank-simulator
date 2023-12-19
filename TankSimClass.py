@@ -18,7 +18,7 @@ class Tank:
                  ,ambientTemp = 20.0
                  ,waterTemp = 20.0
                  ,flowRate = 1.0
-                 ,heaterPower = 20.0
+                 ,heaterPower = 250.0
                  ,heaterState = False
                  ,pumpInState = False
                  ,pumpOutState = False
