@@ -1,0 +1,27 @@
+Status Zbiornika
+---
+tags: 
+  - Informacje
+summary: "Pobierz Stan Zbiornika"
+description: "Pobiera aktualny stan zbiornika, w tym temperaturę oraz stany grzałki i pomp."
+responses:
+  200:
+    description: "Pomyślnie uzyskano stan zbiornika."
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            temp:
+              type: number
+              format: float
+              description: "Aktualna temperatura zbiornika."
+            heater:
+              type: boolean
+              description: "Aktualny stan grzałki zbiornika."
+            pumpIn:
+              type: boolean
+              description: "Aktualny stan pompy wlotowej zbiornika."
+            pumpOut:
+              type: boolean
+              description: "Aktualny stan pompy wylotowej zbiornika."

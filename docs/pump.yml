@@ -1,0 +1,30 @@
+Sterowanie pompą
+---
+tags:
+  - Pompa
+summary: Włączanie/Wyłączanie Pompy
+description: Włącza lub wyłącza pompę w zbiorniku.
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    description: Obiekt JSON zawierający typ pompy (IN_PUMP lub OUT_PUMP) i jej stan (true - włączona, false - wyłączona).
+    required: true
+    schema:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [IN_PUMP, OUT_PUMP]
+          example: IN_PUMP
+        state:
+          type: boolean
+          example: true
+responses:
+  "200":
+    description: Pomyślna odpowiedź
+  "400":
+    description: Błąd w zapytaniu
+  "500":
+    description: Błąd serwera

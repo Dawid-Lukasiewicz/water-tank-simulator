@@ -1,0 +1,18 @@
+Pobieranie Temperatury
+---
+tags:
+  - Informacje
+summary: "Pobiera temperaturę"
+description: "Adres do pobierania aktualnej temperatury."
+responses:
+  200:
+    description: "Sukces"
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            temp:
+              type: number
+              format: float
+              example: 23.5

@@ -1,0 +1,26 @@
+Sterowanie Grzałką
+---
+tags:
+  - Grzałka
+summary: Włączanie/Wyłączanie Grzałki
+description: Włącza lub wyłącza grzałkę w zbiorniku.
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    description: Obiekt JSON zawierający stan grzałki (true - włączona, false - wyłączona).
+    required: true
+    schema:
+      type: object
+      properties:
+        state:
+          type: boolean
+          example: true
+responses:
+  "200":
+    description: OK
+  "400":
+    description: Błąd w zapytaniu
+  "500":
+    description: Błąd serwera

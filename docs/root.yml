@@ -1,0 +1,9 @@
+Scieżka Bazowa
+---
+tags:
+  - Informacje
+summary: "Zwraca opis zbiornika"
+description: "Zwraca łańcuchową reprezentację bieżącego stanu zbiornika."
+responses:
+  200:
+    description: "Pomyślna odpowiedź ze stanem zbiornika."
