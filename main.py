@@ -31,6 +31,19 @@ def get_tank_temp():
             )
     return response
 
+@app.route("/waterLevel", methods = ['GET'])
+def get_water_level():
+    """
+    file: docs/???.yml
+    """
+    response = make_response(
+                jsonify(
+                    { "waterLevel": tank.getLevel()}
+                ),
+                200
+            )
+    return response
+
 @app.route("/status", methods = ['GET'])
 def get_tank_state():
     """
@@ -50,6 +63,7 @@ def get_tank_state():
     return response
 
 # curl -X POST localhost:5000/heater -H "Content-Type: application/json" -d "{\"state\": true}"
+# curl -X POST localhost:5000/heater -H "Content-Type: application/json" -d "{\"state\": false}"
 @app.route("/heater", methods = ['POST'])
 def set_heater():
     """
